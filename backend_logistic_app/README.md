@@ -111,7 +111,7 @@ backend-logistic-app/
 
 1. **Clonar el Repositorio**
 ```bash
-git clone [https://github.com/kevin3080/logistic-app.git](https://github.com/kevin3080/logistic-app.git) 
+git clone https://github.com/kevin3080/logistic-app.git
 cd backend-logistic-app
 ```
 
