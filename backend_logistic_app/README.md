@@ -129,6 +129,28 @@ La aplicación estará disponible en:
 - Swagger UI: http://localhost:8080/swagger-ui.html
 - Base de datos PostgreSQL: localhost:5432
 
+## Arquitectura
+
+El proyecto sigue una arquitectura hexagonal (ports and adapters) con tres capas principales:
+
+1. **Domain**: Contiene las entidades del negocio y los puertos (interfaces)
+2. **Application**: Implementa la lógica de negocio
+3. **Infrastructure**: Contiene adaptadores para REST API y persistencia
+
+## Diagramas del Proyecto
+
+### Estructura de la Base de Datos
+El diagrama de la base de datos se encuentra en `docs/database/schema.dbml`. 
+Puedes visualizarlo en [dbdiagram.io](https://dbdiagram.io) copiando el contenido del archivo.  
+Los datos iniciales se cargan automáticamente desde `init.sql`.
+
+### Arquitectura del Sistema
+El diagrama de arquitectura se encuentra en `docs/diagrams/architecture.puml`.
+Puedes visualizarlo usando cualquier editor compatible con PlantUML como:
+- Plugin de IntelliJ IDEA
+- Visual Studio Code con extensión PlantUML
+- [PlantUML Web Server](http://www.plantuml.com/plantuml/uml/)
+
 ## Autenticación
 
 La API utiliza JWT para autenticación. Para obtener un token:
@@ -147,7 +169,6 @@ Una vez que tengas el token, úsalo en el encabezado Authorization: Bearer YOUR_
 ```bash
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
-
 
 ## Endpoints Principales
 A continuación, se detallan los endpoints disponibles con ejemplos de cómo interactuar con ellos usando curl. (puedes usar POSTMAN de igual manera)
@@ -258,26 +279,6 @@ Sigue la misma convencion que los terrestes
 - PUT `/api/maritime-shipments/{id}` - Actualizar envío
 - DELETE `/api/maritime-shipments/{id}` - Eliminar envío
 
-## Arquitectura
-
-El proyecto sigue una arquitectura hexagonal (ports and adapters) con tres capas principales:
-
-1. **Domain**: Contiene las entidades del negocio y los puertos (interfaces)
-2. **Application**: Implementa la lógica de negocio
-3. **Infrastructure**: Contiene adaptadores para REST API y persistencia
-
-## Base de Datos
-
-El esquema incluye las siguientes tablas:
-- app_users
-- clients
-- products
-- warehouses
-- ports
-- land_shipments
-- maritime_shipments
-
-Los datos iniciales se cargan automáticamente desde `init.sql`.
 
 ## Seguridad
 
@@ -286,24 +287,10 @@ Los datos iniciales se cargan automáticamente desde `init.sql`.
 - Endpoints protegidos requieren token válido
 - Contraseñas encriptadas con BCrypt
 
-## Diagramas del Proyecto
-
-### Estructura de la Base de Datos
-El diagrama de la base de datos se encuentra en `docs/database/schema.dbml`. 
-Puedes visualizarlo en [dbdiagram.io](https://dbdiagram.io) copiando el contenido del archivo.
-
-### Arquitectura del Sistema
-El diagrama de arquitectura se encuentra en `docs/diagrams/architecture.puml`.
-Puedes visualizarlo usando cualquier editor compatible con PlantUML como:
-- Plugin de IntelliJ IDEA
-- Visual Studio Code con extensión PlantUML
-- [PlantUML Web Server](http://www.plantuml.com/plantuml/uml/)
-
-
 ## Documentación API
-
-La documentación completa de la API está disponible en Swagger UI:
-http://localhost:8080/swagger-ui.html
+La documentación completa de la API está disponible en Swagger UI:  
+http://localhost:8080/swagger-ui.html  
+**Nota**: se estan haciendo arreglos para que funcione correctamente
 
 ## Desarrollo
 
