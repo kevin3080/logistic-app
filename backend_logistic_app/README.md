@@ -10,6 +10,7 @@ backend-logistic-app/
 │   │   ├── java/com/logistics/
 │   │   │   ├── application/
 │   │   │   │   └── service/
+│   │   │   │       ├── ClientService.java
 │   │   │   │       ├── LandShipmentService.java
 │   │   │   │       └── MaritimeShipmentService.java
 │   │   │   ├── domain/
@@ -22,25 +23,65 @@ backend-logistic-app/
 │   │   │   │   │   └── MaritimeShipment.java
 │   │   │   │   └── port/
 │   │   │   │       ├── in/
+│   │   │   │       │   ├── CreateClientUseCase.java
 │   │   │   │       │   ├── CreateLandShipmentUseCase.java
-│   │   │   │       │   └── CreateMaritimeShipmentUseCase.java
+│   │   │   │       │   ├── CreateMaritimeShipmentUseCase.java
+│   │   │   │       │   ├── GetClientUseCase.java
+│   │   │   │       │   ├── GetLandShipmentUseCase.java
+│   │   │   │       │   ├── GetMaritimeShipmentUseCase.java
+│   │   │   │       │   ├── UpdateClientUseCase.java
+│   │   │   │       │   ├── UpdateLandShipmentUseCase.java
+│   │   │   │       │   ├── UpdateMaritimeShipmentUseCase.java
+│   │   │   │       │   ├── DeleteClientUseCase.java
+│   │   │   │       │   ├── DeleteLandShipmentUseCase.java
+│   │   │   │       │   └── DeleteMaritimeShipmentUseCase.java
 │   │   │   │       └── out/
+│   │   │   │           ├── SaveClientPort.java
 │   │   │   │           ├── SaveLandShipmentPort.java
 │   │   │   │           └── SaveMaritimeShipmentPort.java
 │   │   │   ├── infrastructure/
 │   │   │   │   ├── adapter/
 │   │   │   │   │   ├── in/
-│   │   │   │   │   │   ├── LandShipmentController.java
-│   │   │   │   │   │   └── MaritimeShipmentController.java
+│   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   ├── ClientController.java
+│   │   │   │   │   │   │   ├── LandShipmentController.java
+│   │   │   │   │   │   │   └── MaritimeShipmentController.java
+│   │   │   │   │   │   └── dto/
+│   │   │   │   │   │       ├── ClientRequest.java
+│   │   │   │   │   │       ├── LandShipmentRequest.java
+│   │   │   │   │   │       ├── MaritimeShipmentRequest.java
+│   │   │   │   │   │       ├── AuthRequest.java
+│   │   │   │   │   │       └── AuthResponse.java
 │   │   │   │   │   └── out/
-│   │   │   │   │       ├── LandShipmentRepositoryImpl.java
-│   │   │   │   │       └── MaritimeShipmentRepositoryImpl.java
+│   │   │   │   │       ├── persistence/
+│   │   │   │   │   │   │   ├── adapter/
+│   │   │   │   │   │   │   │   ├── ClientRepositoryImpl.java
+│   │   │   │   │   │   │   │   ├── ProductRepositoryImpl.java
+│   │   │   │   │   │   │   │   ├── WarehouseRepositoryImpl.java
+│   │   │   │   │   │   │   │   ├── PortRepositoryImpl.java
+│   │   │   │   │   │   │   │   ├── LandShipmentRepositoryImpl.java
+│   │   │   │   │   │   │   │   └── MaritimeShipmentRepositoryImpl.java
+│   │   │   │   │   │   │   └── repository/
+│   │   │   │   │   │   │       ├── SpringDataClientRepository.java
+│   │   │   │   │   │   │       ├── SpringDataProductRepository.java
+│   │   │   │   │   │   │       ├── SpringDataWarehouseRepository.java
+│   │   │   │   │   │   │       ├── SpringDataPortRepository.java
+│   │   │   │   │   │   │       ├── SpringDataLandShipmentRepository.java
+│   │   │   │   │   │   │       └── SpringDataMaritimeShipmentRepository.java
 │   │   │   │   ├── config/
 │   │   │   │   │   ├── SecurityConfig.java
 │   │   │   │   │   └── SwaggerConfig.java
+│   │   │   │   ├── exception/
+│   │   │   │   │   ├── GlobalExceptionHandler.java
+│   │   │   │   │   ├── ResourceNotFoundException.java
+│   │   │   │   │   ├── InvalidDataException.java
+│   │   │   │   │   └── DuplicateGuideNumberException.java
 │   │   │   │   └── security/
-│   │   │   │       ├── JwtTokenProvider.java
-│   │   │   │       └── JwtUserDetailsService.java
+│   │   │   │       ├── JwtRequestFilter.java
+│   │   │   │       ├── JwtUserDetailsService.java
+│   │   │   │       ├── JwtUtil.java
+│   │   │   │       ├── User.java
+│   │   │   │       └── UserRepository.java
 │   │   │   └── BackendLogisticAppApplication.java
 │   │   └── resources/
 │   │       └── application.properties
@@ -102,16 +143,115 @@ Credenciales por defecto:
 - Usuario: admin
 - Contraseña: password
 
-## Endpoints Principales
+Una vez que tengas el token, úsalo en el encabezado Authorization: Bearer YOUR_JWT_TOKEN para todas las solicitudes a los endpoints protegidos.
+```bash
+Authorization: Bearer YOUR_JWT_TOKEN
+```
 
-### Envíos Terrestres
-- GET `/api/land-shipments` - Listar todos los envíos terrestres
-- POST `/api/land-shipments` - Crear nuevo envío terrestre
-- GET `/api/land-shipments/{id}` - Obtener envío por ID
-- PUT `/api/land-shipments/{id}` - Actualizar envío
-- DELETE `/api/land-shipments/{id}` - Eliminar envío
+
+## Endpoints Principales
+A continuación, se detallan los endpoints disponibles con ejemplos de cómo interactuar con ellos usando curl. (puedes usar POSTMAN de igual manera)
+
+Nota: Reemplaza YOUR_JWT_TOKEN con el token real que obtuviste.
+
+### Registrar nuevo cliente
+```bash
+curl -X POST "http://localhost:8080/api/clients" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+     -d '{
+           "name": "Cliente Demo",
+           "email": "demo.client@example.com",
+           "phone": "+1234567890"
+         }'
+```
+
+### Listar todos los clientes
+```bash
+curl -X GET "http://localhost:8080/api/clients" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+### Obtener cliente por ID
+```bash
+curl -X GET "http://localhost:8080/api/clients/CLIENT_UUID" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Actualizar cliente
+```bash
+curl -X PUT "http://localhost:8080/api/clients/CLIENT_UUID" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+     -d '{
+           "name": "Cliente Demo Actualizado",
+           "email": "demo.client.updated@example.com",
+           "phone": "+1122334455"
+         }'
+```
+### Eliminar cliente
+```bash
+curl -X DELETE "http://localhost:8080/api/clients/CLIENT_UUID" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## Envíos Terrestres
+
+### Crear nuevo envío terrestre
+```bash
+curl -X POST "http://localhost:8080/api/land-shipments" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+     -d '{
+           "clientId": "CLIENT_UUID",
+           "productId": "PRODUCT_UUID",
+           "quantity": 12,
+           "registrationDate": "2024-06-20",
+           "deliveryDate": "2024-06-25",
+           "warehouseId": "WAREHOUSE_UUID",
+           "shippingCost": 150.00,
+           "vehiclePlate": "ABC123",
+           "guideNumber": "LANDSHP001A"
+         }'
+```
+
+### Listar envíos terrestres
+```bash
+curl -X GET "http://localhost:8080/api/land-shipments" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+### Obtener envío terrestre por ID
+```bash
+curl -X GET "http://localhost:8080/api/land-shipments/SHIPMENT_UUID" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Actualizar envío terrestre
+```bash
+curl -X PUT "http://localhost:8080/api/land-shipments/SHIPMENT_UUID" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+     -d '{
+           "clientId": "CLIENT_UUID",
+           "productId": "PRODUCT_UUID",
+           "quantity": 15,
+           "registrationDate": "2024-06-20",
+           "deliveryDate": "2024-06-30",
+           "warehouseId": "WAREHOUSE_UUID",
+           "shippingCost": 160.00,
+           "vehiclePlate": "DEF456",
+           "guideNumber": "LANDSHP001A"
+         }'
+```
+
+### Obtener envío terrestre por ID
+```bash
+curl -X DELETE "http://localhost:8080/api/land-shipments/SHIPMENT_UUID" \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
 
 ### Envíos Marítimos
+Sigue la misma convencion que los terrestes
+
 - GET `/api/maritime-shipments` - Listar todos los envíos marítimos
 - POST `/api/maritime-shipments` - Crear nuevo envío marítimo
 - GET `/api/maritime-shipments/{id}` - Obtener envío por ID

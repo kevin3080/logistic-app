@@ -7,11 +7,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.logisticapp.backend_logistic_app.domain.model.MaritimeShipment;
-import com.logisticapp.backend_logistic_app.domain.port.CreateMaritimeShipmentUseCase;
-import com.logisticapp.backend_logistic_app.domain.port.DeleteMaritimeShipmentUseCase;
-import com.logisticapp.backend_logistic_app.domain.port.GetMaritimeShipmentUseCase;
-import com.logisticapp.backend_logistic_app.domain.port.SaveMaritimeShipmentPort;
-import com.logisticapp.backend_logistic_app.domain.port.UpdateMaritimeShipmentUseCase;
+import com.logisticapp.backend_logistic_app.domain.port.in.CreateMaritimeShipmentUseCase;
+import com.logisticapp.backend_logistic_app.domain.port.in.DeleteMaritimeShipmentUseCase;
+import com.logisticapp.backend_logistic_app.domain.port.in.GetMaritimeShipmentUseCase;
+import com.logisticapp.backend_logistic_app.domain.port.out.SaveMaritimeShipmentPort;
+import com.logisticapp.backend_logistic_app.domain.port.in.UpdateMaritimeShipmentUseCase;
 import com.logisticapp.backend_logistic_app.infrastructure.exception.DuplicateGuideNumberException;
 import com.logisticapp.backend_logistic_app.infrastructure.exception.ResourceNotFoundException;
 

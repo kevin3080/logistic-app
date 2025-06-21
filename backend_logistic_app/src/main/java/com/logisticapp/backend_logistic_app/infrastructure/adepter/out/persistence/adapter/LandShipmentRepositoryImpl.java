@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 import com.logisticapp.backend_logistic_app.domain.model.LandShipment;
-import com.logisticapp.backend_logistic_app.domain.port.SaveLandShipmentPort;
+import com.logisticapp.backend_logistic_app.domain.port.out.SaveLandShipmentPort;
 import com.logisticapp.backend_logistic_app.infrastructure.adepter.out.persistence.repository.SpringDataLandShipmentRepository;
 
 import lombok.RequiredArgsConstructor;

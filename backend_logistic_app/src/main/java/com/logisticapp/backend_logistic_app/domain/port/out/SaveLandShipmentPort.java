@@ -1,4 +1,4 @@
-package com.logisticapp.backend_logistic_app.domain.port;
+package com.logisticapp.backend_logistic_app.domain.port.out;
 
 import java.util.List;
 import java.util.Optional;

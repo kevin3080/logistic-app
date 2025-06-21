@@ -7,11 +7,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.logisticapp.backend_logistic_app.domain.model.LandShipment;
-import com.logisticapp.backend_logistic_app.domain.port.CreateLandShipmentUseCase;
-import com.logisticapp.backend_logistic_app.domain.port.DeleteLandShipmentUseCase;
-import com.logisticapp.backend_logistic_app.domain.port.GetLandShipmentUseCase;
-import com.logisticapp.backend_logistic_app.domain.port.SaveLandShipmentPort;
-import com.logisticapp.backend_logistic_app.domain.port.UpdateLandShipmentUseCase;
+import com.logisticapp.backend_logistic_app.domain.port.in.CreateLandShipmentUseCase;
+import com.logisticapp.backend_logistic_app.domain.port.in.DeleteLandShipmentUseCase;
+import com.logisticapp.backend_logistic_app.domain.port.in.GetLandShipmentUseCase;
+import com.logisticapp.backend_logistic_app.domain.port.out.SaveLandShipmentPort;
+import com.logisticapp.backend_logistic_app.domain.port.in.UpdateLandShipmentUseCase;
 import com.logisticapp.backend_logistic_app.infrastructure.exception.DuplicateGuideNumberException;
 import com.logisticapp.backend_logistic_app.infrastructure.exception.ResourceNotFoundException;
 

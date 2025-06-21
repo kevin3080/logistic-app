@@ -1,4 +1,4 @@
-package com.logisticapp.backend_logistic_app.domain.port;
+package com.logisticapp.backend_logistic_app.domain.port.in;
 
 import java.util.UUID;
 
