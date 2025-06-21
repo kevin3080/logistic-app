@@ -1,0 +1,179 @@
+@startuml
+' Packages
+package "domain.model" {
+  class Client {
+    - id: UUID
+    - name: String
+    - email: String
+    - phone: String
+  }
+
+  class Product {
+    - id: UUID
+    - name: String
+    - description: String
+  }
+
+  class Warehouse {
+    - id: UUID
+    - name: String
+    - address: String
+    - city: String
+    - country: String
+  }
+
+  class Port {
+    - id: UUID
+    - name: String
+    - address: String
+    - city: String
+    - country: String
+  }
+
+  class LandShipment {
+    - id: UUID
+    - quantity: int
+    - registrationDate: LocalDate
+    - deliveryDate: LocalDate
+    - vehiclePlate: String
+    - guideNumber: String
+    - shippingCost: double
+    - discountedCost: double
+    --
+    + applyDiscount()
+  }
+
+  class MaritimeShipment {
+    - id: UUID
+    - quantity: int
+    - registrationDate: LocalDate
+    - deliveryDate: LocalDate
+    - fleetNumber: String
+    - guideNumber: String
+    - shippingCost: double
+    - discountedCost: double
+    --
+    + applyDiscount()
+  }
+}
+
+package "domain.port" {
+  interface CreateLandShipmentUseCase {
+    + create(shipment: LandShipment): LandShipment
+  }
+
+  interface CreateMaritimeShipmentUseCase {
+    + create(shipment: MaritimeShipment): MaritimeShipment
+  }
+
+  interface SaveLandShipmentPort {
+    + save(shipment: LandShipment): LandShipment
+    + findById(id: UUID): Optional<LandShipment>
+    + findAll(): List<LandShipment>
+    + deleteById(id: UUID): void
+  }
+
+  interface SaveMaritimeShipmentPort {
+    + save(shipment: MaritimeShipment): MaritimeShipment
+    + findById(id: UUID): Optional<MaritimeShipment>
+    + findAll(): List<MaritimeShipment>
+    + deleteById(id: UUID): void
+  }
+}
+
+package "application.service" {
+  class LandShipmentService implements CreateLandShipmentUseCase {
+    - saveShipmentPort: SaveLandShipmentPort
+    --
+    + create(shipment: LandShipment): LandShipment
+  }
+
+  class MaritimeShipmentService implements CreateMaritimeShipmentUseCase {
+    - saveShipmentPort: SaveMaritimeShipmentPort
+    --
+    + create(shipment: MaritimeShipment): MaritimeShipment
+  }
+}
+
+package "infrastructure.adapter.out" {
+  class LandShipmentRepositoryImpl implements SaveLandShipmentPort {
+    - jpaRepository: SpringDataLandShipmentRepository
+    + save(shipment): LandShipment
+    + findById(id): Optional<LandShipment>
+    + findAll(): List<LandShipment>
+    + deleteById(id): void
+  }
+
+  class MaritimeShipmentRepositoryImpl implements SaveMaritimeShipmentPort {
+    - jpaRepository: SpringDataMaritimeShipmentRepository
+    + save(shipment): MaritimeShipment
+    + findById(id): Optional<MaritimeShipment>
+    + findAll(): List<MaritimeShipment>
+    + deleteById(id): void
+  }
+
+  interface SpringDataLandShipmentRepository << (R,orchid) Repository >>
+  interface SpringDataMaritimeShipmentRepository << (R,orchid) Repository >>
+  interface SpringDataClientRepository << (R,orchid) Repository >>
+  interface SpringDataProductRepository << (R,orchid) Repository >>
+  interface SpringDataWarehouseRepository << (R,orchid) Repository >>
+  interface SpringDataPortRepository << (R,orchid) Repository >>
+}
+
+package "infrastructure.adapter.in" {
+  class LandShipmentController {
+    - createShipmentUseCase: CreateLandShipmentUseCase
+    - getShipmentUseCase: GetLandShipmentUseCase
+    - updateShipmentUseCase: UpdateLandShipmentUseCase
+    - deleteShipmentUseCase: DeleteLandShipmentUseCase
+    + createShipment()
+    + getShipmentById()
+    + getAllShipments()
+    + updateShipment()
+    + deleteShipment()
+  }
+
+  class MaritimeShipmentController {
+    - createShipmentUseCase: CreateMaritimeShipmentUseCase
+    - getShipmentUseCase: GetMaritimeShipmentUseCase
+    - updateShipmentUseCase: UpdateMaritimeShipmentUseCase
+    - deleteShipmentUseCase: DeleteMaritimeShipmentUseCase
+    + createShipment()
+    + getShipmentById()
+    + getAllShipments()
+    + updateShipment()
+    + deleteShipment()
+  }
+}
+
+' Relationships
+Client "1" -- "0..*" LandShipment : has >
+Client "1" -- "0..*" MaritimeShipment : has >
+Product "1" -- "0..*" LandShipment : includes >
+Product "1" -- "0..*" MaritimeShipment : includes >
+Warehouse "1" -- "0..*" LandShipment : delivered to >
+Port "1" -- "0..*" MaritimeShipment : delivered to >
+
+LandShipmentService .right.> SaveLandShipmentPort : uses
+LandShipmentService ..> CreateLandShipmentUseCase : implements
+
+LandShipmentRepositoryImpl .up.|> SaveLandShipmentPort : implements
+LandShipmentRepositoryImpl ..> SpringDataLandShipmentRepository : uses
+
+LandShipmentController .right.> CreateLandShipmentUseCase : uses
+LandShipmentController .right.> GetLandShipmentUseCase : uses
+LandShipmentController .right.> UpdateLandShipmentUseCase : uses
+LandShipmentController .right.> DeleteLandShipmentUseCase : uses
+
+MaritimeShipmentService .right.> SaveMaritimeShipmentPort : uses
+MaritimeShipmentService ..> CreateMaritimeShipmentUseCase : implements
+
+MaritimeShipmentRepositoryImpl .up.|> SaveMaritimeShipmentPort : implements
+MaritimeShipmentRepositoryImpl ..> SpringDataMaritimeShipmentRepository : uses
+
+MaritimeShipmentController .right.> CreateMaritimeShipmentUseCase : uses
+MaritimeShipmentController .right.> GetMaritimeShipmentUseCase : uses
+MaritimeShipmentController .right.> UpdateMaritimeShipmentUseCase : uses
+MaritimeShipmentController .right.> DeleteMaritimeShipmentUseCase : uses
+
+@enduml
