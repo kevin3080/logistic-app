@@ -16,6 +16,29 @@ cuando alguien clona el repositorio por primera vez, debe de ejecutar el siguien
   git submodule update --init --recursive
 ```
 
+**Levantar los Servicios con Docker Compose**
+
+   Navega a la carpeta del backend y usa el siguiente comando para construir las imágenes y levantar los servicios.
+
+   ```bash
+     cd backend-logistic-app
+     docker compose up --build
+   ```
+
+   Esto creará y levantará los contenedores necesarios:
+    - **Backend API** disponible en `http://localhost:8080`
+    - **Base de datos PostgreSQL** disponible en `127.0.0.1:5433` con los valores iniciales definidos en `init.sql`.
+
+**Verificar el Estado de los Contenedores**  
+   Puedes verificar los contenedores levantados con el siguiente comando:
+
+   ```bash
+     docker ps
+   ```
+
+   Asegúrate de que ambos servicios (`backend-logistic-app` y `postgres:15-alpine`) estén en ejecución.
+
+---
 Para actualizar las referencias de los sub-módulos:
 ```bash
   git submodule update --remote
