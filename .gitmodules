@@ -1,3 +1,6 @@
 [submodule "backend-logistic-app"]
 	path = backend-logistic-app
 	url = https://github.com/kevin3080/backend-logistic-app
+[submodule "frontend-logistic-app"]
+	path = frontend-logistic-app
+	url = https://github.com/kevin3080/frontend-vortex-shipments.git
