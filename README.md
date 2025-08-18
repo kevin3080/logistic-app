@@ -1,103 +1,125 @@
-# Sistema de Gestión Logística
-Este proyecto es una solución de software diseñada para una empresa de logística que gestiona tanto operaciones terrestres como marítimas. Permite registrar clientes, productos, envíos, y gestionar bodegas y puertos a nivel nacional e internacional.
+## 🚢 Sistema de Gestión Logística
 
-En esta aplicación, aunque la estructura tiene apariencia de **monorepo**, en realidad utiliza **submódulos de Git** para gestionar de manera independiente el código del backend. Este enfoque arquitectónico permite separar claramente las responsabilidades, facilitando tanto el mantenimiento como las integraciones con herramientas de CI/CD.
+Este proyecto es una solución de software para una empresa de logística que gestiona operaciones terrestres y marítimas.
+Permite registrar clientes, productos, envíos, y administrar bodegas y puertos a nivel nacional e internacional.
 
-El submódulo del backend contiene la implementación completa del servidor desarrollado en **Java con Spring Boot** y está preparado para su uso en entornos tanto de desarrollo como de producción, garantizando eficiencia y consistencia.
+El repositorio principal contiene dos submódulos de Git:
 
-En el futuro, está planificado implementar el frontend bajo la misma estrategia, utilizando submódulos independientes. Esto permitirá una separación aún más clara entre los repositorios, simplificando el desarrollo colaborativo e integrando con mayor facilidad los flujos de CI/CD.
+**Backend** → Java 17 + Spring Boot 3.5.3, arquitectura hexagonal (Ports & Adapters), autenticación con JWT, base de datos PostgreSQL, pruebas con JUnit, dockerizado.
+
+**Frontend** → Angular 20 con SCSS, Angular Material y TailwindCSS, organizado bajo una arquitectura modular por features para mantener el código limpio y escalable.
 
 ---
 
-## Inicializar y actualizar Sub-módulos
-cuando alguien clona el repositorio por primera vez, debe de ejecutar el siguiente comando para inicializar y actualizar los sub-módulos
+### ⚙️ Inicialización del Proyecto
+
+Clona el repositorio principal junto con sus submódulos:
+
+```bash
+  git clone --recursive https://github.com/kevin3080/logistic-app.git
+```
+
+Si ya lo clonaste sin --recursive, ejecuta:
 
 ```bash
   git submodule update --init --recursive
 ```
 
-**Levantar los Servicios con Docker Compose**
+### 🔄 Actualizar Submódulos
 
-   Navega a la carpeta del backend y usa el siguiente comando para construir las imágenes y levantar los servicios.
+Para traer los últimos cambios de los submódulos (backend y frontend):
 
-   ```bash
-     cd backend-logistic-app
-     docker compose up --build
-   ```
-
-   Esto creará y levantará los contenedores necesarios:
-    - **Backend API** disponible en `http://localhost:8080`
-    - **Base de datos PostgreSQL** disponible en `127.0.0.1:5433` con los valores iniciales definidos en `init.sql`.
-
-**Verificar el Estado de los Contenedores**  
-   Puedes verificar los contenedores levantados con el siguiente comando:
-
-   ```bash
-     docker ps
-   ```
-
-   Asegúrate de que ambos servicios (`backend-logistic-app` y `postgres:15-alpine`) estén en ejecución.
-
----
-Para actualizar las referencias de los sub-módulos:
 ```bash
   git submodule update --remote
 ```
 
-## ⚠️ Importante
-**Solo para desarrollo:**
+### 🐳 Levantar Todo con Docker Compose
 
-- **Paso 1:** Si estás trabajando con un repositorio que contiene submódulos, primero actualiza y realiza el push de los cambios en el submódulo.
-- **Paso 2:** Luego realiza el push en el repositorio principal.
+El proyecto está completamente dockerizado.
+Desde la raíz del repositorio principal, ejecuta:
 
-> **Nota:**  
-> Si haces esto al revés, las referencias de los submódulos en el repositorio principal se perderán, lo que puede provocar conflictos que deberán resolverse manualmente.
+```bash
+  docker compose up --build
+```
+
+**Esto levantará:**
+
+ 1. Backend API → disponible en http://localhost:8080
+ 2. Swagger UI → http://localhost:8080/swagger-ui/index.html
+ 3. Base de Datos PostgreSQL → en 127.0.0.1:5433
+ 4. Frontend Angular → disponible en http://localhost:3000
+
+Usuario generado automáticamente por la migración en el proceso del build (`init.sql`)
+>  1. usuario: admin
+>  2. password: password
+
+Puedes verificar el estado de los contenedores con:
+
+```bash
+  docker ps
+```
+
+### 📂 Arquitectura General
+
+#### Backend
+
+ - Lenguaje: Java 17
+ - Framework: Spring Boot 3.5.3
+ - Arquitectura: Hexagonal (Ports & Adapters)
+ - Base de datos: PostgreSQL
+ - Documentación: Swagger UI
+ - Docker + CI/CD con GitHub Actions
+
+#### Frontend
+
+ - Framework: Angular 20
+ - Estilos: SCSS + TailwindCSS + Angular Material
+ - Arquitectura modular (Core / Shared / Features)
 
 
-## CI/CD Integrado con GitHub Actions
-En el submódulo de backend, se han configurado workflows en **GitHub Actions** que realizan las siguientes tareas automáticamente al manejar el proceso de integración y despliegue continuo:
-1. **Construcción de Imagen Docker**:
-   - El pipeline crea una imagen Docker para el backend. Esta imagen contiene la aplicación lista para ejecutarse, asegurando que todo funcione de manera consistente en cualquier entorno.
+### 🚧 Modo Desarrollo
 
-> **Nota importante**: La base de datos no se incluye en este contenedor Docker, siguiendo las buenas prácticas de Docker, donde cada contenedor debe tener un propósito único. El contenedor del backend actúa únicamente como API.
-> 
+#### Backend
 
-2. **Despliegue Automático**:
-   - Si la build y las pruebas tienen éxito, la imagen Docker puede ser empujada a un registro, lista para ser utilizada en un entorno de producción.
-3. **Imagen de Docker Hub**:
-   - La imagen del backend se encuentra disponible públicamente en [Docker Hub](https://hub.docker.com/r/kevinpernia/backend-logistic-app). Puedes encontrar más detalles sobre cómo ejecutarla correctamente en su descripción.
+```bash
+  cd backend-logistic-app
+  docker compose up --build
+```
 
+#### Frontend
 
-## 🔧 Modo Desarrollo
-Para facilitar el desarrollo, la configuración incluye un archivo **docker-compose.yml** que permite ejecutar el backend y la base de datos **PostgreSQL** localmente con un solo comando.
-Características clave del modo desarrollo:
-- **Base de Datos Local**: El contenedor de PostgreSQL es iniciado junto con la API para simular un entorno cercano a producción.
-- **Script de Inicialización - `init.sql`**: Proporciona datos de ejemplo útiles para las pruebas y validaciones locales.
-- **Swagger UI**: La API está completamente documentada y se accede a la interfaz Swagger desde `http://localhost:8080/swagger-ui/index.html`.
+**Servir en modo desarrollo:**
 
-Esto permite:
-- Probar endpoints y configurar clientes fácilmente durante el desarrollo.
-- Validar funcionalidades sin la necesidad de una base de datos externa inicializada manualmente.
-
-## 📄 Documentación del Backend
-El submódulo del backend se encuentra completamente documentado, tanto en su archivo como mediante **Swagger UI**. En el README se detallan aspectos clave como: `README.md`
-- Cómo inicializar el entorno de desarrollo.
-- Uso del archivo `docker-compose.yml`.
-- Pasos para inicializar la base de datos usando el script `init.sql`.
-
-Esto asegura que los desarrolladores puedan comenzar a trabajar con el backend de manera rápida y clara.
+```bash
+  cd frontend-logistic-app
+  npm install
+  ng serve  # tener CLI de angular o en su defecto usar npm start
+```
 
 
-## 🧱 Arquitectura General
+### 📌 Buenas Prácticas con Submódulos
 
-- ✅ **Backend**: Java con Spring Boot
-  - Arquitectura Hexagonal (Ports & Adapters)
-  - Principios SOLID y Clean Code
-  - API RESTful con validaciones, manejo de errores y JWT
-  - Base de datos: PostgreSQL
-  - Pruebas unitarias con JUnit (🚧 en desarrollo)
-  - Dockerizado
-  - CI/CD con Github Actions
-  - Pre commit y Pre Push con Lefthook
-- ✅ **Frontend**: Angular (🚧 en desarrollo)
+Realiza commits y push dentro del submódulo (backend o frontend).
 
+Luego actualiza la referencia en el repo principal:
+
+```bash
+   git add <submodulo>
+   git commit -m "chore: update submodule reference"
+   git push
+```
+
+
+  > [!INFO]
+  > ⚠️ Si haces push en el repo principal antes de actualizar el submódulo, se pueden perder referencias y generar conflictos.
+
+### 🧱 Tecnologías
+
+ - Java 17
+ - Spring Boot 3.5.3
+ - PostgreSQL 15
+ - Angular 20
+ - Angular Material
+ - TailwindCSS
+ - Docker & Docker Compose
+ - GitHub Actions (CI/CD)
