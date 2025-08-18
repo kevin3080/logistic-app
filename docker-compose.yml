@@ -1,23 +1,54 @@
 version: "3.8"
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: logistics_db
+    environment:
+      POSTGRES_DB: logistics_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./backend-logistic-app/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
-      context: ./backend
-    container_name: backend
+      context: ./backend-logistic-app
+    container_name: logistics_app
     ports:
       - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/logistics_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      JWT_SECRET: hngmsUSryRKee4tb747bbzyjU85UihPRScLHWyWASzI=
+      JWT_EXPIRATION: 3600000
+    depends_on:
+      db:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/swagger-ui/index.html"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/health || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
+      start_period: 20s
 
   frontend:
     build:
-      context: ./frontend
+      context: ./frontend-logistic-app
     container_name: frontend
     ports:
       - "3000:3000"
     depends_on:
       backend:
         condition: service_healthy
+
+volumes:
+  pg_data:
