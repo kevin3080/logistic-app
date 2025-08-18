@@ -109,9 +109,8 @@ Luego actualiza la referencia en el repo principal:
    git push
 ```
 
-
-  > [!INFO]
-  > ⚠️ Si haces push en el repo principal antes de actualizar el submódulo, se pueden perder referencias y generar conflictos.
+> [!NOTE]
+> **[!INFO]** Si haces push en el repo principal antes de actualizar el submódulo, se pueden perder referencias y generar conflictos.
 
 ### 🧱 Tecnologías
 
