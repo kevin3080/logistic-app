@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3005:3000"
+    volumes:
+      - ./frontend-logistic-app:/app
+      - /app/node_modules
